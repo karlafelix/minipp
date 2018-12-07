@@ -57,8 +57,8 @@ class No
 template <typename N>
 No<N>::No()
 {
-    setProx(nullptr);
-    setAnt(nullptr);
+    setProx(NULL);
+    setAnt(NULL);
     cor.setItem("Branco");
     custo.setItem(0);
 }
@@ -243,7 +243,7 @@ template <typename L>
 void Lista<L>::show(bool corFlag, bool custoFlag)
 {
     No<L> *aux = prim->getProx();
-    while (aux != nullptr)
+    while (aux != NULL)
     {
         if (corFlag)
             cout << aux->getCor() << ":";
@@ -332,7 +332,7 @@ template <typename G>
 void Graph<G>::insertEdge(int u, int v, int custo)
 {
     mat[u][v] = custo;
-    cout<<"MAT ["<<u<<"] ["<<v<<"] = "<<custo<<endl;
+    //cout<<"MAT ["<<u<<"] ["<<v<<"] = "<<custo<<endl;
     mat[v][u] = custo;
     tam++;
 }
@@ -379,308 +379,341 @@ void Graph<G>::print()
     }
 }
 
-template <typename H>
-class Heapsort
-{
-  private:
-    Lista<H> *A;
-    int tamanho, tamHeap;
-
-  public:
-    Heapsort();
-    Heapsort(Lista<H> *base);
-    int PAI(int i);
-    int ESQ(int i);
-    int DIR(int i);
-    void heapfica(int i, int tamRestante);
-    void troca(No<H> *a, No<H> *b);
-    void constroiHeap();
-    void reconstroiHeap(int tam);
-    Lista<H> *getHeap();
+template<typename H>
+class Heapsort{
+private:
+	Lista<H> *A;
+	int tamanho, tamHeap;
+public:
+	Heapsort();
+	Heapsort(Lista<H> *base);	
+	int PAI(int i);
+	int ESQ(int i);
+	int DIR(int i);
+	void heapfica(int i, int tamRestante);
+	void troca(No<H> *a, No<H> *b);
+	void constroiHeap();
+	void reconstroiHeap(int tam);
+	Lista<H> *getHeap();
 };
 
-template <typename H>
+template<typename H>
 Heapsort<H>::Heapsort() {}
 
-template <typename H>
-Heapsort<H>::Heapsort(Lista<H> *base)
-{
-    A = base;
-    tamanho = base->getOrdem();
-    constroiHeap();
-    for (int i = tamanho; i > 1; i--)
-    {
-        tamHeap--;
-        heapfica(i, tamHeap);
-    }
+template<typename H>
+Heapsort<H>::Heapsort(Lista<H> *base) {
+	A = base;
+	tamanho = base->getOrdem();
+	constroiHeap();
+	for (int i = tamanho; i > 1; i--) {
+		tamHeap--;
+		heapfica(i, tamHeap);
+	}
 }
 
-template <typename H>
-int Heapsort<H>::PAI(int i) { return i / 2; }
+template<typename H>
+int Heapsort<H>::PAI(int i) { return i/2; }
 
-template <typename H>
-int Heapsort<H>::ESQ(int i) { return 2 * i; }
+template<typename H>
+int Heapsort<H>::ESQ(int i) { return 2*i; }
 
-template <typename H>
-int Heapsort<H>::DIR(int i) { return 2 * i + 1; }
+template<typename H>
+int Heapsort<H>::DIR(int i) { return 2*i + 1; }
 
-template <typename H>
-void Heapsort<H>::heapfica(int i, int tamRestante)
-{
-    int l = ESQ(i), r = DIR(i), maior = i;
-    No<H> *x, *y;
-    if (l <= tamRestante)
-    {
-        x = A->busca(l, false);
-        y = A->busca(i, false);
-        if (x->getCusto() > y->getCusto())
-        {
-            maior = l;
-        }
-    }
-    if (r <= tamRestante)
-    {
-        x = A->busca(r, false);
-        y = A->busca(maior, false);
-        if (x->getCusto() > y->getCusto())
-        {
-           maior = r;
-        }
-    }
-    if (maior != i)
-    {
-        troca(A->busca(maior, false), A->busca(i, false));
-        heapfica(maior, tamRestante);
-    }
+template<typename H>
+void Heapsort<H>::heapfica(int i, int tamRestante) {
+	int l = ESQ(i), r = DIR(i), menor = i;
+	No<H> *x, *y;
+	if(l <= tamRestante) {
+		x = A->busca(l, false);
+		y = A->busca(i, false);
+		if(x->getCusto() < y->getCusto()) {
+			menor = l;
+		}
+	}
+	if(r <= tamRestante) {
+		x = A->busca(r, false);
+		y = A->busca(menor, false);	
+		if(x->getCusto() < y->getCusto()) {
+			menor = r;
+		}
+	}
+	if (menor != i) {
+		troca(A->busca(menor, false), A->busca(i, false));
+		heapfica(menor, tamRestante);
+	}
 }
 
-template <typename H>
-void Heapsort<H>::troca(No<H> *a, No<H> *b)
-{
-    No<H> *proxA = a->getProx();
-    No<H> *antB = b->getAnt();
-    No<H> *aux;
+template<typename H>
+void Heapsort<H>::troca(No<H> *a, No<H> *b) {
+	No<H> *proxA = a->getProx();
+	No<H> *antB = b->getAnt();
+	No<H> *aux;
 
-    aux = b->getProx();
-    a->setProx(aux);
-    if (aux != nullptr)
-        aux->setAnt(a);
+	aux = b->getProx();
+	a->setProx(aux);
+	if (aux != NULL) aux->setAnt(a);
 
-    b->setProx(proxA);
-    if (proxA != nullptr)
-        proxA->setAnt(b);
-    else
-        A->setUlt(b);
+	b->setProx(proxA);
+	if (proxA != NULL) proxA->setAnt(b);
+	else A->setUlt(b);
 
-    aux = a->getAnt();
-    b->setAnt(aux);
-    if (aux != nullptr)
-        aux->setProx(b);
+	aux = a->getAnt();
+	b->setAnt(aux);
+	if (aux != NULL) aux->setProx(b);
 
-    a->setAnt(antB);
-    if (antB != nullptr)
-        antB->setProx(a);
-    else
-        A->getPrim()->setProx(a);
+	a->setAnt(antB);
+	if (antB != NULL) antB->setProx(a);
+	else A->getPrim()->setProx(a);
 }
 
-template <typename H>
-void Heapsort<H>::constroiHeap()
-{
-    tamHeap = tamanho;
-    for (int i = tamanho / 2; i > 0; i--)
-    {
-        heapfica(i, tamHeap);
-    }
+
+template<typename H>
+void Heapsort<H>::constroiHeap() {
+	tamHeap = tamanho;
+	for (int i = tamanho/2; i > 0; i--) {
+		heapfica(i, tamHeap);
+	}
 }
 
-template <typename H>
-void Heapsort<H>::reconstroiHeap(int tam)
-{
-    tamanho = tam;
-    constroiHeap();
-}
+template<typename H>
+void Heapsort<H>::reconstroiHeap(int tam) {
+	tamanho = tam;
+	constroiHeap();
+} 
 
-template <typename H>
+template<typename H>
 Lista<H> *Heapsort<H>::getHeap() { return A; }
 
-template <typename D>
-class Djikstra
-{
-  private:
-    Graph<D> *arvore, *result;
-    Lista<D> *refLista, *Q, *novaLista;
-    No<D> *refNo, *u, *v;
-    int n, posiU, posiPai, extraidos, nResult, tamResult;
-    int **adj;
-    Heapsort<D> *heapificador;
-
-  public:
-    Djikstra();
-    Djikstra(Graph<D> *base, int inicio);
-    void inicializa(No<D> *s);
-    Graph<D> *getResult();
-    No<D> *extraeMax(Lista<D> *L);
-    void relaxa(No<D> *u, No<D> *v, int w);
+template<typename D>
+class Djikstra{
+private:
+	Graph<D> *arvore, *result;
+	Lista<D> *refLista, *Q, *novaLista;
+	No<D> *refNo, *u, *v;
+	int n, posiU, posiPai, extraidos, nResult, tamResult;
+	int **adj;
+	Heapsort<D> *heapificador;
+public:
+	Djikstra();
+	Djikstra(Graph<D> *base, int inicio, int fim);
+	void inicializa(No<D> *s);
+	Graph<D> *getResult();
+	No<D> *extraeMin(Lista<D> *L);
+	void relaxa(No<D> *u, No<D> *v, int w);
 };
 
-template <typename D>
+template<typename D>
 Djikstra<D>::Djikstra() {}
 
-template <typename D>
-Djikstra<D>::Djikstra(Graph<D> *base, int inicio)
-{
-    adj = base->getAdj();
-    refLista = base->getVertices();
-    n = refLista->getOrdem();
-    refNo = refLista->getPrim()->getProx();
+template<typename D>
+Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim) {
+	adj = base->getAdj();
+	refLista = base->getVertices();	
+	n = refLista->getOrdem();
+	refNo = refLista->getPrim()->getProx();
 
-    inicializa(refLista->busca(inicio, false));
+	inicializa(refLista->busca(inicio, false));
 
-    arvore = new Graph<D>(n, base->getTam());
-    arvore->setVertices(refLista);
+	arvore = new Graph<D>(n, base->getTam());
+	arvore->setVertices(refLista);
 
-    Q = new Lista<D>(refLista);
-    heapificador = new Heapsort<D>(Q);
-    extraidos = 0;
-    while (n - extraidos)
+	Q = new Lista<D>(refLista); 
+	heapificador = new Heapsort<D>(Q);
+	extraidos = 0;
+	while(n - extraidos) {
+		u = extraeMin(Q); 
+		posiU = u->getPos();
+		adj[posiU][0] = posiU;
+		posiPai = u->getPosPai();
+
+		arvore->insertEdge(posiU, posiPai, adj[posiU][posiPai]);
+		for (int i = 1; i <= n; i++) {
+			if(adj[posiU][i] != 0) {
+				refNo = refLista->busca(i, true);
+				if (adj[i][0] != i) v = Q->busca(i, true);
+				else v = NULL;
+				relaxa(u, v, adj[posiU][i]);
+			}
+		}
+	}
+
+	novaLista = new Lista<D>();
+
+	posiU = fim;
+	while(posiU != 0) {
+		refNo = refLista->busca(posiU, true);
+		novaLista->insere(refNo);
+		posiU = refNo->getPosPai();
+	}
+	nResult = novaLista->getOrdem();
+	tamResult = nResult-1;
+	result = new Graph<D>(nResult, tamResult);
+	result->setVertices(novaLista);	
+
+	posiU = fim;
+	int i = 1;
+	while(posiU != inicio) {
+		refNo = refLista->busca(posiU, true);
+		posiPai = refNo->getPosPai();
+        //cout<<"PosiU ["<<posiU<<"] PosiPai["<<posiPai<<"] "<<endl;
+        //cout<<"CUSTO DO VERTICE SENDO ADD "<<adj[posiU][posiPai]<<endl;
+        //cout<<"i e i+1 "<<i<<" "<<i+1<<endl;
+		result->insertEdge(i, i+1, adj[posiU][posiPai]);
+        //result->print();
+		i++;
+		posiU = posiPai;
+	}
+
+}
+
+template<typename D>
+void Djikstra<D>::inicializa(No<D> *s) {
+	while(refNo != NULL) {
+		refNo->setCusto(INF); 
+		refNo = refNo->getProx();
+	}
+	s->setCusto(0);
+	s->setPosPai(0);
+}
+template<typename D>
+Graph<D> *Djikstra<D>::getResult() { return result; };
+
+
+template<typename D>
+No<D> *Djikstra<D>::extraeMin(Lista<D> *L) {
+	No<D> *aux, *min, *proxMin, *antAux, *prim;
+
+	heapificador->reconstroiHeap(n - ++extraidos);
+	prim = L->getPrim();
+
+	min = prim->getProx(); 
+	proxMin = min->getProx();
+	aux = L->getUlt();	
+	antAux = aux->getAnt();
+	
+	aux->setAnt(NULL);
+	if (antAux != NULL) 			
+		antAux->setProx(NULL);  	
+	if (antAux != min)
+		L->setUlt(antAux);			
+
+	min->setProx(NULL);
+	if (aux != min) prim->setProx(aux);	
+	else prim->setProx(NULL);
+
+	if (aux != proxMin) {
+		aux->setProx(proxMin);
+		if(proxMin != NULL) 
+			proxMin->setAnt(aux);
+	}
+	return min;
+}
+
+template<typename D>
+void Djikstra<D>::relaxa(No<D> *u, No<D> *v, int w) {
+	if (v != NULL) {
+		if (v->getCusto() > u->getCusto() + w) {
+			v->setCusto(	u->getCusto() + w);
+			v->setPosPai(u->getPos());
+		}
+	}
+	if (refNo != NULL) {
+		if (refNo->getCusto() > u->getCusto() + w) {
+			refNo->setCusto(u->getCusto() +  w);
+			refNo->setPosPai(u->getPos());
+		}
+	}
+}
+
+
+int percorreGrafo(Graph<int> *aux){
+    int acumulador = 0;
+    int **mat;
+    mat = aux->getMat();
+    for (int i = 1; i <= aux->getTam() ; i++)
     {
-        u = extraeMin(Q);
-        posiU = u->getPos();
-        adj[posiU][0] = posiU;
-        posiPai = u->getPosPai();
-
-        arvore->insertEdge(posiU, posiPai, adj[posiU][posiPai]);
-        for (int i = 1; i <= n; i++)
+        for (int j = i; j <= aux->getTam(); j++)
         {
-            if (adj[posiU][i] != -99)
-            {
-                refNo = refLista->busca(i, true);
-                if (adj[i][0] != i)
-                    v = Q->busca(i, true);
-                else
-                    v = nullptr;
-                relaxa(u, v, adj[posiU][i]);
+            if(mat[i][j] !=  0){
+                acumulador+=mat[i][j];
             }
         }
     }
-
-    novaLista = new Lista<D>();
-
-    
-    while (posiU != 0)
-    {
-        refNo = refLista->busca(posiU, true);
-        novaLista->insere(refNo);
-        posiU = refNo->getPosPai();
-    }
-    nResult = novaLista->getOrdem();
-    tamResult = nResult - 1;
-    result = new Graph<D>(nResult, tamResult);
-    result->setVertices(novaLista);
-
-    int i = 1;
-    while (posiU != inicio)
-    {
-        refNo = refLista->busca(posiU, true);
-        posiPai = refNo->getPosPai();
-        result->insertEdge(i, i + 1, adj[posiU][posiPai]);
-        i++;
-        posiU = posiPai;
-    }
-}
-
-template <typename D>
-void Djikstra<D>::inicializa(No<D> *s)
-{
-    while (refNo != nullptr)
-    {
-        refNo->setCusto(INF);
-        refNo = refNo->getProx();
-    }
-    s->setCusto(0);
-    s->setPosPai(0);
-}
-template <typename D>
-Graph<D> *Djikstra<D>::getResult() { return result; };
-
-template <typename D>
-No<D> *Djikstra<D>::extraeMax(Lista<D> *L)
-{
-    No<D> *aux, *max, *proxMax, *antAux, *prim;
-
-    heapificador->reconstroiHeap(n - ++extraidos);
-    prim = L->getPrim();
-
-    max = prim->getProx();
-    proxMax = max->getProx();
-    aux = L->getUlt();
-    antAux = aux->getAnt();
-
-    aux->setAnt(nullptr);
-    if (antAux != nullptr)
-        antAux->setProx(nullptr);
-    if (antAux != max)
-        L->setUlt(antAux);
-
-    max->setProx(nullptr);
-    if (aux != max)
-        prim->setProx(aux);
-    else
-        prim->setProx(nullptr);
-
-    if (aux != proxMax)
-    {
-        aux->setProx(proxMax);
-        if (proxMax != nullptr)
-            proxMax->setAnt(aux);
-    }
-    return max;
-}
-
-template <typename D>
-void Djikstra<D>::relaxa(No<D> *u, No<D> *v, int w)
-{
-    if (v != nullptr)
-    {
-        if (v->getCusto() > u->getCusto() + w)
-        {
-            v->setCusto(u->getCusto() + w);
-            v->setPosPai(u->getPos());
-        }
-    }
-    if (refNo != nullptr)
-    {
-        if (refNo->getCusto() > u->getCusto() + w)
-        {
-            refNo->setCusto(u->getCusto() + w);
-            refNo->setPosPai(u->getPos());
-        }
-    }
+    //    cout<<"valor do custo do aux "<<aux->getCusto()<<" item do aux "<<aux->getItem()<<endl;
+    return acumulador;
 }
 
 int main()
 {
     int ordem, n, inicio;
+    int maior_dentre_menores = 0; 
+    Graph<int> *aux = new Graph<int>();
+    int **mat;
 
     cin >> ordem;
     
-    Graph<int> grafo(ordem);
+    Graph<int> *grafo = new Graph<int>(ordem);
 
     for (int i = 1; i <= ordem ; i++)
     {
-        for (int j = 1; j <= ordem; j++)
+        for (int j = 1; j <=ordem; j++)
         {
             cin>>n;
-            grafo.insertEdge(i, j, n);
+            grafo->insertEdge(i, j, n);
         }
     }
     cin >> inicio;
+    
     if(inicio == 0){
         inicio = 1;
-        Djikstra<Graph<int>> caminhoMaximo(grafo, inicio);
+        for(int i = 1; i<=ordem; i++){
+            int comparador = 0;
+            Djikstra<int> caminhoMinimo(grafo, inicio, i);
+            //cout<<"RESULT "<<endl;
+            //caminhoMinimo.getResult()->print();
+            //aux = caminhoMinimo.getResult()->getVertices()->getPrim()->getProx();
+            aux = caminhoMinimo.getResult();
+            mat = aux->getMat();
+            //cout<<"TAM "<<aux->getTam()<<endl;
+            for (int i = 1; i <= aux->getN() ; i++)
+            {
+                for (int j = i; j <= aux->getN(); j++)
+                {
+                    //cout<<"mat["<<i<<"]["<<j<<"] = "<<mat[i][j]<<endl;
+                    if(mat[i][j] !=  0){
+                        comparador+=mat[i][j];
+                    }
+                }
+            }
+            //cout<<"comparador "<<comparador<<endl;
+            if(comparador >= maior_dentre_menores){
+                maior_dentre_menores = comparador;
+            }
+        }
+        
     }
     else{
-        Djikstra<Graph<int>> caminhoMaximo(grafo, inicio);
+        for(int i = 1; i<=ordem; i++){
+            int comparador = 0;
+            Djikstra<int> caminhoMinimo(grafo, inicio, i);
+            aux = caminhoMinimo.getResult();
+            caminhoMinimo.getResult()->print();
+            mat = aux->getMat();
+            for (int i = 1; i <= aux->getN() ; i++)
+            {
+                for (int j = i; j <= aux->getN(); j++)
+                {
+                    if(mat[i][j] !=  0){
+                        comparador+=mat[i][j];
+                    }
+                }
+            }
+            //cout<<"comparador "<<comparador<<endl;
+            if(comparador >= maior_dentre_menores){
+                maior_dentre_menores = comparador;
+            }
+        }
     }
+    cout<<maior_dentre_menores<<endl;
 }
