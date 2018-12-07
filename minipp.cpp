@@ -303,8 +303,7 @@ Graph<G>::Graph(int n, int tam)
 
 template <typename G>
 void Graph<G>::initialize()
-{
-    
+{  
     vertices = new Lista<G>(n);
 
     mat = new int *[n + 1];
@@ -370,7 +369,7 @@ void Graph<G>::print()
         for (j = 1; j <= n; ++j)
         {
             v = mat[i][j];
-            if (mat[i][j] < 0)
+            if (mat[i][j] >= 0)
                 cout << v;
             else
                 cout << -1;
@@ -518,7 +517,7 @@ class Djikstra
 
   public:
     Djikstra();
-    Djikstra(Graph<D> *base, int inicio, int fim);
+    Djikstra(Graph<D> *base, int inicio);
     void inicializa(No<D> *s);
     Graph<D> *getResult();
     No<D> *extraeMax(Lista<D> *L);
@@ -529,7 +528,7 @@ template <typename D>
 Djikstra<D>::Djikstra() {}
 
 template <typename D>
-Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim)
+Djikstra<D>::Djikstra(Graph<D> *base, int inicio)
 {
     adj = base->getAdj();
     refLista = base->getVertices();
@@ -568,7 +567,7 @@ Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim)
 
     novaLista = new Lista<D>();
 
-    posiU = fim;
+    
     while (posiU != 0)
     {
         refNo = refLista->busca(posiU, true);
@@ -580,7 +579,6 @@ Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim)
     result = new Graph<D>(nResult, tamResult);
     result->setVertices(novaLista);
 
-    posiU = fim;
     int i = 1;
     while (posiU != inicio)
     {
@@ -663,7 +661,7 @@ void Djikstra<D>::relaxa(No<D> *u, No<D> *v, int w)
 
 int main()
 {
-    int ordem, n;
+    int ordem, n, inicio;
 
     cin >> ordem;
     
@@ -677,6 +675,12 @@ int main()
             grafo.insertEdge(i, j, n);
         }
     }
-
-    grafo.print();
+    cin >> inicio;
+    if(inicio == 0){
+        inicio = 1;
+        Djikstra<Graph<int>> caminhoMaximo(grafo, inicio);
+    }
+    else{
+        Djikstra<Graph<int>> caminhoMaximo(grafo, inicio);
+    }
 }
