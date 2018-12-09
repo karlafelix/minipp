@@ -508,22 +508,25 @@ Djikstra<D>::Djikstra() {}
 
 template<typename D>
 Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim) {
-	adj = base->getAdj();
-	refLista = base->getVertices();	
-	n = refLista->getOrdem();
-	refNo = refLista->getPrim()->getProx();
+	adj = base->getAdj();//matriz de adjacencia
+	refLista = base->getVertices();//lista de vertices	
+	n = refLista->getOrdem();//ordem do grafo
+	refNo = refLista->getPrim()->getProx();//primeiro no da lista de vertices
 
 	inicializa(refLista->busca(inicio, false));
 
-	arvore = new Graph<D>(n, base->getTam());
+	arvore = new Graph<D>(n, base->getTam());//base é o grafo recebido
 	arvore->setVertices(refLista);
 
 	Q = new Lista<D>(refLista); 
 	heapificador = new Heapsort<D>(Q);
-	extraidos = 0;
+    //Q->show(false, true);
+    
+    extraidos = 0;
 	while(n - extraidos) {
-		u = extraeMin(Q); 
-		posiU = u->getPos();
+		u = extraeMin(Q);
+        //cout << "peguei o u, o custo atual dele eh: " << u->getCusto() << endl;
+        posiU = u->getPos();
 		adj[posiU][0] = posiU;
 		posiPai = u->getPosPai();
 
@@ -534,7 +537,8 @@ Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim) {
 				if (adj[i][0] != i) v = Q->busca(i, true);
 				else v = NULL;
 				relaxa(u, v, adj[posiU][i]);
-			}
+                //cout << " u v e adj[posiU][i] " << u <<" "<< v <<" "<< adj[posiU][i]<<endl;
+            }
 		}
 	}
 
@@ -558,7 +562,6 @@ Djikstra<D>::Djikstra(Graph<D> *base, int inicio, int fim) {
 		posiPai = refNo->getPosPai();
         //cout<<"PosiU ["<<posiU<<"] PosiPai["<<posiPai<<"] "<<endl;
         //cout<<"CUSTO DO VERTICE SENDO ADD "<<adj[posiU][posiPai]<<endl;
-        //cout<<"i e i+1 "<<i<<" "<<i+1<<endl;
 		result->insertEdge(i, i+1, adj[posiU][posiPai]);
         //result->print();
 		i++;
@@ -576,9 +579,9 @@ void Djikstra<D>::inicializa(No<D> *s) {
 	s->setCusto(0);
 	s->setPosPai(0);
 }
+
 template<typename D>
 Graph<D> *Djikstra<D>::getResult() { return result; };
-
 
 template<typename D>
 No<D> *Djikstra<D>::extraeMin(Lista<D> *L) {
@@ -607,6 +610,7 @@ No<D> *Djikstra<D>::extraeMin(Lista<D> *L) {
 		if(proxMin != NULL) 
 			proxMin->setAnt(aux);
 	}
+    //cout<<" minnimo "<<min->getCusto()<<endl;
 	return min;
 }
 
@@ -648,8 +652,7 @@ int main()
 {
     int ordem, n, inicio;
     int maior_dentre_menores = 0; 
-    Graph<int> *aux = new Graph<int>();
-    int **mat;
+    No<int> *aux = new No<int>();
 
     cin >> ordem;
     
@@ -665,55 +668,22 @@ int main()
     }
     cin >> inicio;
     
-    if(inicio == 0){
-        inicio = 1;
-        for(int i = 1; i<=ordem; i++){
-            int comparador = 0;
-            Djikstra<int> caminhoMinimo(grafo, inicio, i);
-            //cout<<"RESULT "<<endl;
-            //caminhoMinimo.getResult()->print();
-            //aux = caminhoMinimo.getResult()->getVertices()->getPrim()->getProx();
-            aux = caminhoMinimo.getResult();
-            mat = aux->getMat();
-            //cout<<"TAM "<<aux->getTam()<<endl;
-            for (int i = 1; i <= aux->getN() ; i++)
-            {
-                for (int j = i; j <= aux->getN(); j++)
-                {
-                    //cout<<"mat["<<i<<"]["<<j<<"] = "<<mat[i][j]<<endl;
-                    if(mat[i][j] !=  0){
-                        comparador+=mat[i][j];
-                    }
-                }
-            }
-            //cout<<"comparador "<<comparador<<endl;
-            if(comparador >= maior_dentre_menores){
-                maior_dentre_menores = comparador;
-            }
+    inicio++;
+    
+    Djikstra<int> *caminhoMinimo = new Djikstra<int>(grafo, inicio, 2);
+    
+    delete caminhoMinimo;
+    aux = grafo->getVertices()->getPrim()->getProx();
+
+    while (aux != NULL)
+    {
+        if (aux->getCusto() > maior_dentre_menores)
+        {
+            maior_dentre_menores = aux->getCusto();
         }
-        
+        aux = aux->getProx();
     }
-    else{
-        for(int i = 1; i<=ordem; i++){
-            int comparador = 0;
-            Djikstra<int> caminhoMinimo(grafo, inicio, i);
-            aux = caminhoMinimo.getResult();
-            caminhoMinimo.getResult()->print();
-            mat = aux->getMat();
-            for (int i = 1; i <= aux->getN() ; i++)
-            {
-                for (int j = i; j <= aux->getN(); j++)
-                {
-                    if(mat[i][j] !=  0){
-                        comparador+=mat[i][j];
-                    }
-                }
-            }
-            //cout<<"comparador "<<comparador<<endl;
-            if(comparador >= maior_dentre_menores){
-                maior_dentre_menores = comparador;
-            }
-        }
-    }
+
     cout<<maior_dentre_menores<<endl;
+
 }
